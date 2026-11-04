@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nchat.proto\x12\x04\x63hat\x1a\x1bgoogle/protobuf/empty.proto\".\n\x0cWriteRequest\x12\x10\n\x08nickname\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"\x18\n\nWriteReply\x12\n\n\x02ok\x18\x01 \x01(\x08\"\x1b\n\x0b\x43hatHistory\x12\x0c\n\x04line\x18\x01 \x03(\t2k\n\x04\x43hat\x12-\n\x05Write\x12\x12.chat.WriteRequest\x1a\x10.chat.WriteReply\x12\x34\n\x07GetChar\x12\x16.google.protobuf.Empty\x1a\x11.chat.ChatHistoryb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nchat.proto\x12\x04\x63hat\x1a\x1bgoogle/protobuf/empty.proto\".\n\x0cWriteRequest\x12\x10\n\x08nickname\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"\x18\n\nWriteReply\x12\n\n\x02ok\x18\x01 \x01(\x08\"\x1c\n\x0b\x43hatHistory\x12\r\n\x05lines\x18\x01 \x03(\t2k\n\x04\x43hat\x12-\n\x05Write\x12\x12.chat.WriteRequest\x1a\x10.chat.WriteReply\x12\x34\n\x07GetChat\x12\x16.google.protobuf.Empty\x1a\x11.chat.ChatHistoryb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,7 +37,7 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_WRITEREPLY']._serialized_start=97
   _globals['_WRITEREPLY']._serialized_end=121
   _globals['_CHATHISTORY']._serialized_start=123
-  _globals['_CHATHISTORY']._serialized_end=150
-  _globals['_CHAT']._serialized_start=152
-  _globals['_CHAT']._serialized_end=259
+  _globals['_CHATHISTORY']._serialized_end=151
+  _globals['_CHAT']._serialized_start=153
+  _globals['_CHAT']._serialized_end=260
 # @@protoc_insertion_point(module_scope)

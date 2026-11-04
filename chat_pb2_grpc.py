@@ -50,8 +50,8 @@ class ChatStub:
                 request_serializer=chat__pb2.WriteRequest.SerializeToString,
                 response_deserializer=chat__pb2.WriteReply.FromString,
                 _registered_method=True)
-        self.GetChar = channel.unary_unary(
-                '/chat.Chat/GetChar',
+        self.GetChat = channel.unary_unary(
+                '/chat.Chat/GetChat',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=chat__pb2.ChatHistory.FromString,
                 _registered_method=True)
@@ -76,7 +76,7 @@ class ChatServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetChar(self, request, context):
+    def GetChat(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -90,8 +90,8 @@ def add_ChatServicer_to_server(servicer, server):
                     request_deserializer=chat__pb2.WriteRequest.FromString,
                     response_serializer=chat__pb2.WriteReply.SerializeToString,
             ),
-            'GetChar': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetChar,
+            'GetChat': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetChat,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=chat__pb2.ChatHistory.SerializeToString,
             ),
@@ -144,7 +144,7 @@ class Chat:
             _registered_method=True)
 
     @staticmethod
-    def GetChar(request,
+    def GetChat(request,
             target,
             options=(),
             channel_credentials=None,
@@ -157,7 +157,7 @@ class Chat:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/chat.Chat/GetChar',
+            '/chat.Chat/GetChat',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             chat__pb2.ChatHistory.FromString,
             options,

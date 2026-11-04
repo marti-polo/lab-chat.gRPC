@@ -17,7 +17,7 @@ message WriteReply {
 }
 // Peticio de tot el historic que te gurdat el servidor
 message ChatHistory {
-  repeated string line = 1;
+  repeated string lines = 1;
 }
 // Resposta a la peticio de escriptura de un missatge
 /*message GetChatRequest {
@@ -33,5 +33,5 @@ message GetChatReply {
 
 service Chat {
   rpc Write(WriteRequest) returns (WriteReply);
-  rpc GetChar(google.protobuf.Empty) returns (ChatHistory);
+  rpc GetChat(google.protobuf.Empty) returns (ChatHistory);
 }
