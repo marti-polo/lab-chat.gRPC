@@ -8,7 +8,6 @@ Aplicació de xat client-servidor en Python basada en crides a procediments remo
 ![gRPC](https://img.shields.io/badge/gRPC-1.85-244c5a?logo=grpc&logoColor=white)
 ![Protocol Buffers](https://img.shields.io/badge/Protobuf-proto3-4285F4?logo=google&logoColor=white)
 
-Mini-lab de **Sistemes Distribuïts** · La Salle URL
 
 </div>
 
