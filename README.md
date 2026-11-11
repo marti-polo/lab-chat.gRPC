@@ -1,69 +1,131 @@
+<div align="center">
+
 # Xat amb gRPC
 
-Mini-lab de Sistemes Distribuïts (La Salle URL). Aplicació de xat client-servidor en Python on la comunicació es fa amb crides a procediments remots (RPC) amb gRPC i els missatges se serialitzen amb protocol buffers.
+Aplicació de xat client-servidor en Python basada en crides a procediments remots (RPC).
 
-## Com funciona
+![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)
+![gRPC](https://img.shields.io/badge/gRPC-1.85-244c5a?logo=grpc&logoColor=white)
+![Protocol Buffers](https://img.shields.io/badge/Protobuf-proto3-4285F4?logo=google&logoColor=white)
 
-El servidor guarda tots els missatges en un fitxer local, `chat.txt`, i publica dos mètodes remots:
+Mini-lab de **Sistemes Distribuïts** · La Salle URL
 
-- `Write`: rep un nickname i un text i afegeix la línia `nickname: text` al fitxer. Retorna `ok` per confirmar si s'ha desat.
-- `GetChat`: retorna totes les línies del fitxer.
+</div>
 
-El client no guarda cap fitxer. Té dos fils:
+---
 
-- El principal llegeix el que escriu l'usuari i l'envia amb `Write`.
-- Un fil secundari crida `GetChat` cada segon i imprimeix només les línies que encara no ha mostrat.
+## Índex
 
-El contracte entre els dos costats és `chat.proto`. A partir d'aquest fitxer, `protoc` genera `chat_pb2.py` (classes dels missatges) i `chat_pb2_grpc.py` (stub del client i classe base del servidor).
+- [Descripció](#descripció)
+- [Arquitectura](#arquitectura)
+- [Contracte del servei](#contracte-del-servei)
+- [Estructura del projecte](#estructura-del-projecte)
+- [Configuració](#configuració)
+- [Execució](#execució)
+- [Regenerar els stubs](#regenerar-els-stubs)
 
-## Fitxers
+## Descripció
 
-| Fitxer | Contingut |
-|---|---|
-| `chat.proto` | Definició dels missatges i del servei `Chat` |
-| `chat_pb2.py` | Generat per `protoc`: classes dels missatges |
-| `chat_pb2_grpc.py` | Generat per `protoc`: `ChatStub`, `ChatServicer` i registre del servei |
-| `server.py` | Servidor: implementa `Write` i `GetChat` sobre `chat.txt` |
-| `client.py` | Client: envia missatges i consulta el xat cada segon |
+Els clients es connecten a un servidor central amb **gRPC** i els missatges se serialitzen amb **Protocol Buffers**.
 
-## Instal·lació
+- El **servidor** desa tots els missatges a un fitxer local (`chat.txt`) i exposa dos mètodes remots.
+- El **client** no guarda res a disc. Fa servir dos fils:
+  - el fil principal llegeix el que escriu l'usuari i l'envia amb `Write`;
+  - un fil secundari crida `GetChat` cada segon i imprimeix només les línies noves.
 
-Provat amb Python 3.14.
+## Arquitectura
+
+```mermaid
+sequenceDiagram
+    participant U as Usuari
+    participant C as client.py
+    participant S as server.py
+    participant F as chat.txt
+
+    U->>C: escriu un missatge
+    C->>S: Write(nickname, text)
+    S->>F: afegeix "nickname: text"
+    S-->>C: WriteReply(ok)
+
+    loop cada segon
+        C->>S: GetChat()
+        S->>F: llegeix totes les línies
+        S-->>C: ChatHistory(lines)
+        C->>U: mostra les línies noves
+    end
+```
+
+## Contracte del servei
+
+Definit a [`chat.proto`](chat.proto):
+
+```protobuf
+service Chat {
+  rpc Write(WriteRequest) returns (WriteReply);
+  rpc GetChat(google.protobuf.Empty) returns (ChatHistory);
+}
+```
+
+| Mètode | Petició | Resposta | Funció |
+|---|---|---|---|
+| `Write` | `WriteRequest { nickname, text }` | `WriteReply { ok }` | Afegeix `nickname: text` al fitxer |
+| `GetChat` | `google.protobuf.Empty` | `ChatHistory { lines[] }` | Retorna tot l'historial |
+
+## Estructura del projecte
 
 ```
+.
+├── chat.proto          # Definició dels missatges i del servei Chat
+├── chat_pb2.py         # Generat: classes dels missatges
+├── chat_pb2_grpc.py    # Generat: ChatStub, ChatServicer i registre del servei
+├── server.py           # Servidor: implementa Write i GetChat sobre chat.txt
+├── client.py           # Client: envia missatges i consulta el xat cada segon
+└── requirements.txt    # Dependències
+```
+
+## Configuració
+
+Requisits: **Python 3.14** (versió provada).
+
+```bash
 python -m venv .venv
-.venv\Scripts\activate          # Windows
-source .venv/bin/activate       # Linux / macOS
+
+# Windows
+.venv\Scripts\activate
+# Linux / macOS
+source .venv/bin/activate
+
 pip install -r requirements.txt
-```
-
-## Generar els stubs
-
-Només cal si es modifica `chat.proto`:
-
-```
-python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. chat.proto
 ```
 
 ## Execució
 
-En una terminal, el servidor (escolta al port 50051):
+**1. Servidor** (escolta al port `50051`):
 
-```
+```bash
 python server.py
 ```
 
-En altres terminals, un client per usuari:
+**2. Clients**, un per terminal i usuari:
 
-```
+```bash
 python client.py <chatServerIP> <nickname>
 ```
 
 Exemple amb dos usuaris a la mateixa màquina:
 
-```
+```bash
 python client.py localhost Zipi
 python client.py localhost Zape
 ```
 
-Per sortir del client, Ctrl+C o Ctrl+D. Per aturar el servidor, Ctrl+C.
+> [!TIP]
+> Per sortir del client: `Ctrl+C` o `Ctrl+D`. Per aturar el servidor: `Ctrl+C`.
+
+## Regenerar els stubs
+
+Només cal si es modifica `chat.proto`:
+
+```bash
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. chat.proto
+```
