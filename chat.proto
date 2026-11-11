@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package chat;
+
+//Per poder utilitzar el empty de google neceitem:
+import "google/protobuf/empty.proto";
+
+/* Peticio de escriptura de un missatge*/
+message WriteRequest {
+  string nickname = 1;
+  string text = 2;
+}
+
+// Resposta de write, confirma la escriptura
+message WriteReply {
+  bool ok = 1;
+}
+// Peticio de tot el historic que te gurdat el servidor
+message ChatHistory {
+  repeated string lines = 1;
+}
+// Resposta a la peticio de escriptura de un missatge
+/*message GetChatRequest {
+  //int32 from_lin = 1;
+}
+
+// Resposta al GetChar
+message GetChatReply {
+  repeated string lines = 1;
+  int32 next_line = 2;
+}
+*/
+
+service Chat {
+  rpc Write(WriteRequest) returns (WriteReply);
+  rpc GetChat(google.protobuf.Empty) returns (ChatHistory);
+}
